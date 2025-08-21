@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game</title>
+    <style>
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #4ade80, #3b82f6, #8b5cf6);
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        .game-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .title {
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .score-board {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-around;
+        }
+        .score {
+            color: white;
+            font-size: 1.5rem;
+        }
+        .game-board {
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            padding: 10px;
+            margin: 20px auto;
+            display: inline-block;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(20, 20px);
+            gap: 1px;
+            background: #1f2937;
+            border-radius: 10px;
+            padding: 5px;
+        }
+        .cell {
+            width: 20px;
+            height: 20px;
+            background: #374151;
+            border-radius: 2px;
+        }
+        .snake-head { background: #4ade80; }
+        .snake-body { background: #22c55e; }
+        .food { background: #ef4444; }
+        
+        .controls {
+            margin: 20px 0;
+        }
+        .btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn:hover {
+            background: #2563eb;
+        }
+        .mobile-controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 200px;
+            margin: 20px auto;
+        }
+        .arrow-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .empty { background: transparent; border: none; }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="title">🐍 Snake Game</h1>
+        
+        <div class="score-board">
+            <div>
+                <div>Score</div>
+                <div class="score" id="score">0</div>
+            </div>
+            <div>
+                <div>High Score</div>
+                <div class="score" id="highScore">0</div>
+            </div>
+        </div>
+
+        <div class="game-board">
+            <div class="grid" id="gameGrid"></div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" id="startBtn" onclick="startGame()">Start Game</button>
+            <button class="btn" id="resetBtn" onclick="resetGame()" style="display:none;">Reset</button>
+        </div>
+
+        <div id="gameOver" style="display:none; background: rgba(239,68,68,0.2); padding: 20px; border-radius: 15px; margin: 20px 0;">
+            <h2 style="color: white;">Game Over! 💀</h2>
+            <p style="color: white;">Final Score: <span id="finalScore">0</span></p>
+            <button class="btn" onclick="startGame()">Play Again</button>
+        </div>
+
+        <div class="mobile-controls">
+            <div class="empty"></div>
+            <button class="arrow-btn" onclick="changeDirection(0, -1)">↑</button>
+            <div class="empty"></div>
+            <button class="arrow-btn" onclick="changeDirection(-1, 0)">←</button>
+            <div class="empty"></div>
+            <button class="arrow-btn" onclick="changeDirection(1, 0)">→</button>
+            <div class="empty"></div>
+            <button class="arrow-btn" onclick="changeDirection(0, 1)">↓</button>
+            <div class="empty"></div>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.1); border-radius: 15px; padding: 15px; margin: 20px 0;">
+            <h3 style="color: white; margin-bottom: 10px;">How to Play</h3>
+            <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem;">
+                Use arrow keys or touch controls to move. Eat red food to grow. Don't hit walls or yourself!
+            </p>
+        </div>
+    </div>
+
+    <script>
